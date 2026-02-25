@@ -83,6 +83,7 @@ class memoryDb{
       await isar.jobs.delete(job.id);
     });
   }
+
   Future<bool> updateJob(Job job) async {
     return await isar.writeTxn(() async {
       await isar.jobs.put(job);

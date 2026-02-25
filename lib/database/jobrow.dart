@@ -1,10 +1,10 @@
 import 'package:isar_community/isar.dart';
+import 'package:memory_v2/database/alarmRow.dart';
 
 part 'jobrow.g.dart';
 
 @Collection(accessor: 'jobs')
 class Job{
-  @Index(unique: true)
   Id id = Isar.autoIncrement;
   late String title;
   late String discription;
@@ -13,4 +13,7 @@ class Job{
   DateTime? doneDay;
 
   late bool isDid=false;
+
+
+  final alarms=IsarLinks<Alarm>();
 }
