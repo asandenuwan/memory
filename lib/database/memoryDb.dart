@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:memory_v2/database/alarmRow.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:isar_community/isar.dart';
 
 import 'jobrow.dart';
 import 'tabrow.dart';
+import '../AlarmBloc/alarmContainer.dart';
 
 import 'dart:async';
 class memoryDb{
@@ -12,7 +14,7 @@ class memoryDb{
 
   static Future<void> init()async{
     final Directory dir=await getApplicationDocumentsDirectory();
-    isar=await Isar.open([JobSchema,TabSchema], directory: dir.path);
+    isar=await Isar.open([JobSchema,TabSchema,AlarmSchema], directory: dir.path);
   }
 
   Future<void> addTab({required Tab T})async{
@@ -31,7 +33,6 @@ class memoryDb{
 
   Future<void> addJob({required Tab tab,required Job job})async{
     if(isar.isOpen){
-
       return await memoryDb.isar.writeTxn(()async{
         await isar.jobs.put(job);
 
@@ -42,7 +43,11 @@ class memoryDb{
       print("run init before use DB");
     }
   }
-
+  Future<void> addAlarm(Alarm a)async{
+      await memoryDb.isar.writeTxn(()async {
+        memoryDb.isar.Alarms.put(a);
+      });
+  }
   Future<List<Tab>> getTabs()async{
     if(!isar.isOpen){print("call init before us DB");exit(-1);}
 

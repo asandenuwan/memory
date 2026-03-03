@@ -18,6 +18,12 @@ class addNewJob extends BackendEvent{
   addNewJob({required this.job});
 }
 
+class addNewAlarm extends BackendEvent{
+  late final Alarm alarm;
+  addNewAlarm({required this.alarm});
+}
+
+
 class updateJob extends BackendEvent{
   late final Job job;
   updateJob(this.job);

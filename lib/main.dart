@@ -3,17 +3,17 @@ import 'database/memoryDb.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'backend/backend_bloc.dart';
 import 'pages/Tab.dart';
+import 'NotificationApi/notification.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-// import 'alarm_Api/alram.dart';
-//
-// @pragma('vm:entry-point')
-// void alarmCallback() {
-//   print("-------------------------Alarm fired asan!");
-// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (await Permission.notification.isDenied) {
+    await Permission.notification.request();
+  }
   await memoryDb.init();
+  await NotifitaionApi.init();
 
   // print("------1");
   //

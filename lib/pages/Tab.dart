@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widget/jobList.dart';
 import '../widget/menu.dart';
 import '../backend/backend_bloc.dart';
-import 'addJob.dart';
+import 'addJobPage.dart';
+import '../NotificationApi/notification.dart';
 
 class TabWidget extends StatefulWidget {
   TabWidget({super.key});
@@ -33,10 +34,14 @@ class _TabState extends State<TabWidget> {
           drawer: menuList(context),
 
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              print(states.currentPage!.Ctab.id);
-              if(states.currentPage!.Ctab.id >=0){return addJobWidget(context);}
-
+            onPressed: () async {
+              print("check");
+              await NotifitaionApi.showNification("hellow");
+              if(states.currentPage!.Ctab.id >=0){
+                // return addJobWidget(context);
+                // Navigator.push(context, MaterialPageRoute(builder: (context){return addJobPage();}));
+                Navigator.push(context, MaterialPageRoute(builder: (context){return addJobPage();}));
+              }
             },
             child: Icon(Icons.add,color: Colors.white,),
             backgroundColor: Colors.black,

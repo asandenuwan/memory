@@ -2,9 +2,9 @@ import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import '../database/jobrow.dart';
 import 'alarms.dart';
 
-class AlramApi{
+class AlramRunner{
 
-  AlramApi();
+  AlramRunner();
 
   static Future<bool> init()async{
     await AndroidAlarmManager.initialize();

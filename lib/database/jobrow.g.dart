@@ -33,7 +33,8 @@ const JobSchema = CollectionSchema(
       type: IsarType.dateTime,
     ),
     r'isDid': PropertySchema(id: 3, name: r'isDid', type: IsarType.bool),
-    r'title': PropertySchema(id: 4, name: r'title', type: IsarType.string),
+    r'noAlarm': PropertySchema(id: 4, name: r'noAlarm', type: IsarType.bool),
+    r'title': PropertySchema(id: 5, name: r'title', type: IsarType.string),
   },
 
   estimateSize: _jobEstimateSize,
@@ -79,7 +80,8 @@ void _jobSerialize(
   writer.writeString(offsets[1], object.discription);
   writer.writeDateTime(offsets[2], object.doneDay);
   writer.writeBool(offsets[3], object.isDid);
-  writer.writeString(offsets[4], object.title);
+  writer.writeBool(offsets[4], object.noAlarm);
+  writer.writeString(offsets[5], object.title);
 }
 
 Job _jobDeserialize(
@@ -94,7 +96,8 @@ Job _jobDeserialize(
   object.doneDay = reader.readDateTimeOrNull(offsets[2]);
   object.id = id;
   object.isDid = reader.readBool(offsets[3]);
-  object.title = reader.readString(offsets[4]);
+  object.noAlarm = reader.readBool(offsets[4]);
+  object.title = reader.readString(offsets[5]);
   return object;
 }
 
@@ -114,6 +117,8 @@ P _jobDeserializeProp<P>(
     case 3:
       return (reader.readBool(offset)) as P;
     case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -557,6 +562,14 @@ extension JobQueryFilter on QueryBuilder<Job, Job, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Job, Job, QAfterFilterCondition> noAlarmEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'noAlarm', value: value),
+      );
+    });
+  }
+
   QueryBuilder<Job, Job, QAfterFilterCondition> titleEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -818,6 +831,18 @@ extension JobQuerySortBy on QueryBuilder<Job, Job, QSortBy> {
     });
   }
 
+  QueryBuilder<Job, Job, QAfterSortBy> sortByNoAlarm() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'noAlarm', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Job, Job, QAfterSortBy> sortByNoAlarmDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'noAlarm', Sort.desc);
+    });
+  }
+
   QueryBuilder<Job, Job, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -892,6 +917,18 @@ extension JobQuerySortThenBy on QueryBuilder<Job, Job, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Job, Job, QAfterSortBy> thenByNoAlarm() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'noAlarm', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Job, Job, QAfterSortBy> thenByNoAlarmDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'noAlarm', Sort.desc);
+    });
+  }
+
   QueryBuilder<Job, Job, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -932,6 +969,12 @@ extension JobQueryWhereDistinct on QueryBuilder<Job, Job, QDistinct> {
     });
   }
 
+  QueryBuilder<Job, Job, QDistinct> distinctByNoAlarm() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'noAlarm');
+    });
+  }
+
   QueryBuilder<Job, Job, QDistinct> distinctByTitle({
     bool caseSensitive = true,
   }) {
@@ -969,6 +1012,12 @@ extension JobQueryProperty on QueryBuilder<Job, Job, QQueryProperty> {
   QueryBuilder<Job, bool, QQueryOperations> isDidProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isDid');
+    });
+  }
+
+  QueryBuilder<Job, bool, QQueryOperations> noAlarmProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'noAlarm');
     });
   }
 

@@ -1,0 +1,358 @@
+import "package:flutter/material.dart";
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:memory_v2/AlarmBloc/alarmContainer.dart';
+import 'package:memory_v2/alarm_Api/alramRunner.dart';
+import '../AlarmBloc/alarm_bloc.dart';
+class specificTimer extends StatefulWidget {
+  const specificTimer({super.key});
+
+  @override
+  State<specificTimer> createState() => _specificTimerState();
+}
+
+class _specificTimerState extends State<specificTimer> {
+  TextEditingController year=TextEditingController();
+  late int month;
+  late int day;
+  late int hour;
+  late int min;
+  late int sec;
+
+  @override
+  void initState() {
+    super.initState();
+    year.text = DateTime.now().year.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        spacing: 10,
+        mainAxisSize: .max,
+        children: [
+          Row(
+            spacing: 10,
+            mainAxisSize: .max,
+            children: [
+              Expanded(child: TextField(
+                controller: year,
+                decoration: InputDecoration(
+                  hintText: "year",
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white
+                ),
+              ),
+              ),
+
+              Expanded(
+                  child:
+                  DropdownButtonFormField<int>(
+                  items: List.generate(12,(i){
+                    i++;
+                    return DropdownMenuItem(child: Text(i.toString()),value: i);
+                  }),
+                  onChanged: (i){month=i!;},
+                  hint: Text("mm"),
+
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white
+                  )
+              )),
+
+              Expanded(
+                  child:DropdownButtonFormField<int>(
+                  items: List.generate(31,(i){
+                    i++;
+                    return DropdownMenuItem(child: Text(i.toString()),value: i);
+                  }
+                  ),
+                  onChanged: (i){day=i!;},
+                  decoration: InputDecoration(
+                    hint: Text("dd"),
+                    border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white
+                  )
+              )
+              ),
+            ],
+          ),
+          Row(
+            spacing: 10,
+            mainAxisSize: .max,
+            children: [
+              Expanded(child:DropdownButtonFormField<int>(
+                  items: List.generate(24,(i){
+                    i++;
+                    return DropdownMenuItem(child: Text(i.toString()),value: i);
+                  }),
+                  onChanged: (i){hour=i!;},
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "hh",
+                      filled: true,
+                      fillColor: Colors.white
+                  )
+              )),
+              Expanded(child:DropdownButtonFormField<int>(
+                  items: List.generate(60,(i){
+                    i++;
+                    return DropdownMenuItem(child: Text(i.toString()),value: i);
+                  }),
+                  onChanged: (i){min=i!;},
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "mm",
+                      filled: true,
+                      fillColor: Colors.white
+                  )
+              )),
+              Expanded(child:DropdownButtonFormField<int>(
+                  items: List.generate(60,(i){
+                    i++;
+                    return DropdownMenuItem(child: Text(i.toString()),value: i);
+                  }),
+                  onChanged: (i){sec=i!;},
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "ss",
+                      filled: true,
+                      fillColor: Colors.white
+                  )
+              )),
+            ],
+          ),
+          SizedBox(height: 20,),
+          // note: specificTimer set btn
+          FloatingActionButton(onPressed: (){
+
+            //FIXME: month years day time can be 0 or vailded it befor use
+
+            Alarmcontainer a=Alarmcontainer();
+            a.type='s';
+            a.year=int.parse(year.text);
+            a.month=month;
+            a.H=hour;
+            a.M=min;
+            a.S=sec;
+            context.read<AlarmBloc>().add(setAlarm(alarm: a));
+          },child: Icon(Icons.save),backgroundColor: Colors.orange,foregroundColor: Colors.white,)
+        ],
+      ), 
+        decoration: BoxDecoration(
+          border: Border.all(width: 1),
+          borderRadius: BorderRadius.circular(10)
+        )
+    );
+  }
+}
+
+// =====================================================================================================
+
+class WeekDayModel {
+  final String name;
+  bool isSelected=false;
+
+  WeekDayModel(this.name);
+}
+// ======================================================================================================
+
+class weeklyTimer extends StatefulWidget {
+  const weeklyTimer({super.key});
+
+  @override
+  State<weeklyTimer> createState() => _weeklyTimerState();
+}
+
+class _weeklyTimerState extends State<weeklyTimer> {
+  late List<WeekDayModel> weekDay;
+  late int hour;
+  late int min;
+  late int sec;
+
+  @override
+  void initState(){
+    super.initState();
+    weekDay=[WeekDayModel('Mon'),WeekDayModel('Tue'),WeekDayModel('Wed'),WeekDayModel('Thu'),WeekDayModel('Fri'),WeekDayModel('Sat'),WeekDayModel('Sun')];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        spacing: 10,
+        children: [
+          Row(
+            children: List.generate(7, (int l){
+              return Column(
+                children: [
+                  Checkbox(
+                    value: weekDay[l].isSelected,
+                    onChanged: (bool? x){
+                      setState(() {
+                        weekDay[l].isSelected=x??false;
+                      });
+                    }
+                  ),
+                  Text(weekDay[l].name)
+                ],
+                mainAxisSize: .max,
+              );
+              },)
+            ),
+          Row(
+            spacing: 10,
+            children: [
+              Expanded(
+                  child: DropdownButtonFormField(
+                      items: List.generate(25, (i){
+                       return DropdownMenuItem(value: i,child: Text(i.toString()),);
+                      }
+                      ), onChanged: (i){setState(() {
+                        hour=i??0;
+                      });},
+                  hint: Text("hh"),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder()
+                      ),
+                      borderRadius: BorderRadius.circular(10))
+              ),
+              Expanded(
+                  child: DropdownButtonFormField(
+                      items: List.generate(61, (i){
+                        return DropdownMenuItem(value: i,child: Text(i.toString()),);
+                      }
+                      ), onChanged: (i){setState(() {
+                    min=i??0;
+                  });
+                  },
+                  hint: Text("mm"),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder()
+                      ),
+                      borderRadius: BorderRadius.circular(10))
+              ),
+              Expanded(
+                  child: DropdownButtonFormField(
+                      items: List.generate(61, (i){
+                        return DropdownMenuItem(value: i,child: Text(i.toString()),);
+                      }
+                      ), onChanged: (i){setState(() {
+                    sec=i??0;
+                  });},
+                  hint: Text("sec"),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder()
+                  ),
+                  borderRadius: BorderRadius.circular(10)
+                  )
+              )
+            ],
+          ),
+          SizedBox(height: 20,),
+          FloatingActionButton(
+            onPressed: (){},
+            child: Icon(Icons.save),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.orange,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+// ======================================================================================================
+
+class intervalTimer extends StatefulWidget {
+   intervalTimer({super.key});
+  int hours=0;
+   int min=0;
+   int sec=0;
+  @override
+  State<intervalTimer> createState() => _intervalTimerState();
+}
+
+class _intervalTimerState extends State<intervalTimer> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        spacing: 10,
+        mainAxisSize: .min,
+        children: [
+          Row(
+            spacing: 10,
+            children: [
+            Expanded(child: DropdownButtonFormField<int>(
+                items:  List.generate(25, (int l){
+                  return DropdownMenuItem(
+                    child: Text(l.toString()),
+                    value: l,
+                  );
+                }),
+                onChanged: (int? val){
+                  widget.hours=val??0;
+                },
+              hint: Text("hh"),
+              decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder()
+              )
+              )
+            ),
+            Expanded(child: DropdownButtonFormField<int>(
+                items:  List.generate(61, (int l){
+                  return DropdownMenuItem(
+                    child: Text(l.toString()),
+                    value: l,
+                  );
+                }),
+                onChanged: (int? val){
+                  widget.min=val??0;
+                },
+              hint: Text('mm'),
+              decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                border: OutlineInputBorder()
+              )
+            )
+            ),Expanded(child: DropdownButtonFormField<int>(
+                items:  List.generate(61, (int l){
+                  return DropdownMenuItem(
+                    child: Text(l.toString()),
+                    value: l,
+                  );
+                }),
+                onChanged: (int? val){
+                  widget.sec=val??0;
+                },
+              hint: Text("ss"),
+              decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                border: OutlineInputBorder()
+              )
+            )
+            )
+          ],),
+          SizedBox(height: 20,),
+          FloatingActionButton(onPressed: (){},child: Icon(Icons.save),foregroundColor: Colors.white,backgroundColor: Colors.orange,)
+        ],
+      ),
+    );
+  }
+}

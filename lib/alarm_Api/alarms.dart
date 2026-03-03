@@ -1,31 +1,37 @@
-import 'package:memory_v2/database/jobrow.dart';
-import 'alram.dart';
+import 'alramRunner.dart';
+import '../NotificationApi/notification.dart';
 
-void specificAlarm(Map<String,dynamic> pams){
-  print(pams["title"]);
+@pragma('vm:entry-point')
+void specificAlarm(Map<String,dynamic> pams)async{
+
+  await NotifitaionApi.showNification(pams["title"]);
 }
 
-void specificAlarmRepaet(Map<String,dynamic> pams){
-  print(pams["title"]);
+@pragma('vm:entry-point')
+void specificAlarmRepaet(Map<String,dynamic> pams)async{
+
   DateTime d=pams['date'];
-  String title=pams["title"];
+  String msg=pams["title"];
   int id=pams['id'];
-  AlramApi.specificTimer(d,title,id);
+
+  await NotifitaionApi.showNification(msg);
+  AlramRunner.specificTimer(d.add(Duration(days: 7)),msg,id);
 }
 
-void intervalRepeat(Map<String,dynamic> pams){
-  print(pams["title"]);
+@pragma('vm:entry-point')
+void intervalRepeat(Map<String,dynamic> pams)async{
 
   String msg=pams["title"];
   int id=pams['id'];
   Duration d=pams['duration'];
 
-  AlramApi.intervalTimer(d, msg, true, id);
+  await NotifitaionApi.showNification(msg);
+  AlramRunner.intervalTimer(d, msg, true, id);
 }
 
-void intervalNoneRepeat(Map<String,dynamic> pams){
-
+@pragma('vm:entry-point')
+void intervalNoneRepeat(Map<String,dynamic> pams)async{
   String msg=pams["title"];
-  int id=pams['id'];
-  Duration d=pams['duration'];
+
+  await NotifitaionApi.showNification(msg);
 }
