@@ -12,7 +12,7 @@ part 'alarmRow.g.dart';
 @Collection(accessor:"Alarms")
 class Alarm{
   late String type;
-  late String title;
+  String? title;
   Id id=Isar.autoIncrement;
   int? year;
   int? month;
@@ -21,5 +21,5 @@ class Alarm{
   int? M;
   int? S;
   List<bool>? weekDays;
-  bool? repeat;
+  bool repeat=false;
 }

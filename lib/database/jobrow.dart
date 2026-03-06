@@ -16,5 +16,5 @@ class Job{
 
   late bool noAlarm=true;
 
-  final alarms=IsarLinks<Alarm>();
+  IsarLink<Alarm> alarm=IsarLink<Alarm>();
 }

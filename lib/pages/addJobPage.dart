@@ -220,11 +220,15 @@ class _addJobPageState extends State<addJobPage> {
                         Job j = Job();
                         j.title = title.text;
                         j.discription = Disc.text;
-                        context.read<BackendBloc>().add(addNewJob(job: j));
 
-                        context.read<AlarmBloc>().add(addAlarm(LastIdCreated: 1));// FIXME: fix this Last id must get last Alarm from DB ;
+                        if(context.read<AlarmBloc>().state is SettedAlarm){
+                          SettedAlarm a=context.read<AlarmBloc>().state as SettedAlarm;
+                          context.read<BackendBloc>().add(addNewJobAndAlarm(job: j, alarm: a.alarm));
+                          context.read<BackendBloc>().add(loadAlarm(alarm: a.alarm));
+
+                        }else{context.read<BackendBloc>().add(addNewJob(job: j));}
+
                         context.read<AlarmBloc>().add(unSetAlarm());
-
                         Navigator.pop(context);
                       },
                       child: Text(" Add "),
@@ -239,6 +243,7 @@ class _addJobPageState extends State<addJobPage> {
                     ElevatedButton(
                       onPressed: () {
                         context.read<AlarmBloc>().add(unSetAlarm());
+                        Navigator.of(context).pop();
                       },
                       child: Text("Clear"),
                       style: ButtonStyle(

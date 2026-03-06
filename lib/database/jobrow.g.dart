@@ -44,11 +44,11 @@ const JobSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {
-    r'alarms': LinkSchema(
-      id: -6153366222154136383,
-      name: r'alarms',
+    r'alarm': LinkSchema(
+      id: 3290886430790881521,
+      name: r'alarm',
       target: r'Alarm',
-      single: false,
+      single: true,
     ),
   },
   embeddedSchemas: {},
@@ -130,12 +130,12 @@ Id _jobGetId(Job object) {
 }
 
 List<IsarLinkBase<dynamic>> _jobGetLinks(Job object) {
-  return [object.alarms];
+  return [object.alarm];
 }
 
 void _jobAttach(IsarCollection<dynamic> col, Id id, Job object) {
   object.id = id;
-  object.alarms.attach(col, col.isar.collection<Alarm>(), r'alarms', id);
+  object.alarm.attach(col, col.isar.collection<Alarm>(), r'alarm', id);
 }
 
 extension JobQueryWhereSort on QueryBuilder<Job, Job, QWhere> {
@@ -720,64 +720,15 @@ extension JobQueryFilter on QueryBuilder<Job, Job, QFilterCondition> {
 extension JobQueryObject on QueryBuilder<Job, Job, QFilterCondition> {}
 
 extension JobQueryLinks on QueryBuilder<Job, Job, QFilterCondition> {
-  QueryBuilder<Job, Job, QAfterFilterCondition> alarms(FilterQuery<Alarm> q) {
+  QueryBuilder<Job, Job, QAfterFilterCondition> alarm(FilterQuery<Alarm> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'alarms');
+      return query.link(q, r'alarm');
     });
   }
 
-  QueryBuilder<Job, Job, QAfterFilterCondition> alarmsLengthEqualTo(
-    int length,
-  ) {
+  QueryBuilder<Job, Job, QAfterFilterCondition> alarmIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'alarms', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<Job, Job, QAfterFilterCondition> alarmsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'alarms', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<Job, Job, QAfterFilterCondition> alarmsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'alarms', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<Job, Job, QAfterFilterCondition> alarmsLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'alarms', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<Job, Job, QAfterFilterCondition> alarmsLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'alarms', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<Job, Job, QAfterFilterCondition> alarmsLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-        r'alarms',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
+      return query.linkLength(r'alarm', 0, true, 0, true);
     });
   }
 }

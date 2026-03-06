@@ -6,6 +6,6 @@ sealed class AlarmState {}
 final class emptyAlarm extends AlarmState {}
 
 final class SettedAlarm extends AlarmState{
-  final Alarmcontainer? alarm;
+  final Alarm alarm;
   SettedAlarm({required this.alarm});
 }

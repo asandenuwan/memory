@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:memory_v2/AlarmBloc/alarmContainer.dart';
-import 'package:memory_v2/alarm_Api/alramRunner.dart';
 import '../AlarmBloc/alarm_bloc.dart';
+import '../database/alarmRow.dart';
+
 class specificTimer extends StatefulWidget {
   const specificTimer({super.key});
 
@@ -12,11 +12,11 @@ class specificTimer extends StatefulWidget {
 
 class _specificTimerState extends State<specificTimer> {
   TextEditingController year=TextEditingController();
-  late int month;
-  late int day;
-  late int hour;
-  late int min;
-  late int sec;
+   int month=0;
+   int day=0;
+   int hour=0;
+   int min=0;
+   int sec=0;
 
   @override
   void initState() {
@@ -87,8 +87,7 @@ class _specificTimerState extends State<specificTimer> {
             mainAxisSize: .max,
             children: [
               Expanded(child:DropdownButtonFormField<int>(
-                  items: List.generate(24,(i){
-                    i++;
+                  items: List.generate(25,(i){
                     return DropdownMenuItem(child: Text(i.toString()),value: i);
                   }),
                   onChanged: (i){hour=i!;},
@@ -100,8 +99,7 @@ class _specificTimerState extends State<specificTimer> {
                   )
               )),
               Expanded(child:DropdownButtonFormField<int>(
-                  items: List.generate(60,(i){
-                    i++;
+                  items: List.generate(61,(i){
                     return DropdownMenuItem(child: Text(i.toString()),value: i);
                   }),
                   onChanged: (i){min=i!;},
@@ -113,8 +111,7 @@ class _specificTimerState extends State<specificTimer> {
                   )
               )),
               Expanded(child:DropdownButtonFormField<int>(
-                  items: List.generate(60,(i){
-                    i++;
+                  items: List.generate(61,(i){
                     return DropdownMenuItem(child: Text(i.toString()),value: i);
                   }),
                   onChanged: (i){sec=i!;},
@@ -131,16 +128,21 @@ class _specificTimerState extends State<specificTimer> {
           // note: specificTimer set btn
           FloatingActionButton(onPressed: (){
 
-            //FIXME: month years day time can be 0 or vailded it befor use
+            if(int.parse(year.text)<=0 || month==0 || day ==0){
+              print("null alarm");
+              return;
+            }
+            Alarm alarm=Alarm();
+            alarm.type='s';
+            alarm.year=int.parse(year.text);
+            alarm.month=month;
+            alarm.day=day;
+            alarm.H=hour;
+            alarm.M=min;
+            alarm.S=sec;
 
-            Alarmcontainer a=Alarmcontainer();
-            a.type='s';
-            a.year=int.parse(year.text);
-            a.month=month;
-            a.H=hour;
-            a.M=min;
-            a.S=sec;
-            context.read<AlarmBloc>().add(setAlarm(alarm: a));
+            context.read<AlarmBloc>().add(setAlarm(alarm: alarm));
+
           },child: Icon(Icons.save),backgroundColor: Colors.orange,foregroundColor: Colors.white,)
         ],
       ), 
@@ -170,10 +172,10 @@ class weeklyTimer extends StatefulWidget {
 }
 
 class _weeklyTimerState extends State<weeklyTimer> {
-  late List<WeekDayModel> weekDay;
-  late int hour;
-  late int min;
-  late int sec;
+   late List<WeekDayModel> weekDay;
+   int hour=0;
+   int min=0;
+   int sec=0;
 
   @override
   void initState(){
@@ -262,7 +264,17 @@ class _weeklyTimerState extends State<weeklyTimer> {
           ),
           SizedBox(height: 20,),
           FloatingActionButton(
-            onPressed: (){},
+            onPressed: (){
+              Alarm alarm=Alarm();
+              alarm.type='w';
+              alarm.H=hour;
+              alarm.M=min;
+              alarm.S=sec;
+              alarm.repeat=true;
+              alarm.weekDays=List.generate(7, (i){return weekDay[i].isSelected;});
+
+              context.read<AlarmBloc>().add(setAlarm(alarm: alarm));
+            },
             child: Icon(Icons.save),
             foregroundColor: Colors.white,
             backgroundColor: Colors.orange,
@@ -350,7 +362,25 @@ class _intervalTimerState extends State<intervalTimer> {
             )
           ],),
           SizedBox(height: 20,),
-          FloatingActionButton(onPressed: (){},child: Icon(Icons.save),foregroundColor: Colors.white,backgroundColor: Colors.orange,)
+          FloatingActionButton(onPressed: (){
+
+            if(widget.hours ==0 && widget.min==0 && widget.sec==0){
+              print("Alarm empty");
+              return;
+            }
+
+            Alarm alarm=Alarm();
+            alarm.type='i';
+            alarm.H=widget.hours;
+            alarm.M=widget.min;
+            alarm.S=widget.sec;
+            context.read<AlarmBloc>().add(setAlarm(alarm: alarm));
+
+          },
+            child: Icon(Icons.save),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.orange,
+          )
         ],
       ),
     );

@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import '../alarm_Api/alramRunner.dart';
 import '../database/memoryDb.dart';
 import '../database/tabrow.dart';
 import '../database/jobrow.dart';
 import '../database/alarmRow.dart';
-import '../AlarmBloc/alarmContainer.dart';
 
 part 'backend_event.dart';
 part 'backend_state.dart';
@@ -76,7 +76,7 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
           List<Job> j = await memoryDb().getJobs(box.currentPage!.Ctab);
 
           //--------------------loadPage event-------------------
-          // add(loadPage(await box.currentPage!.Ctab));
+          add(loadPage(await box.currentPage!.Ctab));
 
           emit(MailBox(currentPage: CurrentPage(Ctab: box.currentPage!.Ctab, jobs: j), tabList: box.tabList));
           //--------------------------------------------------------
@@ -85,6 +85,29 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
       }catch (e){
         print("-------------error-------------------- $e ;;;;;;;;;;;;;;;;;;;");
       }
+    });
+
+    on<addNewJobAndAlarm>((E,emit)async {//add new job i gona get current tab from CurrentPage state using state var
+      try{
+        if (state is MailBox) {
+          final box = state as MailBox;
+
+          await memoryDb().addJobAndAlarm(tab: box.currentPage!.Ctab, job: E.job,alarm: E.alarm);
+          List<Job> j = await memoryDb().getJobs(box.currentPage!.Ctab);
+          //--------------------loadPage event-------------------
+          add(loadPage(await box.currentPage!.Ctab));
+          //--------------------------------------------------------
+          emit(MailBox(currentPage: CurrentPage(Ctab: box.currentPage!.Ctab, jobs: j), tabList: box.tabList));
+
+
+        }
+      }catch (e){
+        print("-------------error-------------------- $e ;;;;;;;;;;;;;;;;;;;");
+      }
+    });
+
+    on<loadAlarm>((event,emit)async{
+      AlramRunner.loadAlarm(event.alarm);
     });
 
     on<deleteTab>((event,emit)async{

@@ -4,11 +4,13 @@ import '../NotificationApi/notification.dart';
 @pragma('vm:entry-point')
 void specificAlarm(Map<String,dynamic> pams)async{
 
+  NotifitaionApi.init();
   await NotifitaionApi.showNification(pams["title"]);
 }
 
 @pragma('vm:entry-point')
 void weekAlarm(Map<String,dynamic> pams)async{
+  NotifitaionApi.init();
 
   DateTime d=pams['date'];
   String msg=pams["title"];
@@ -21,6 +23,8 @@ void weekAlarm(Map<String,dynamic> pams)async{
 @pragma('vm:entry-point')
 void intervalRepeat(Map<String,dynamic> pams)async{
 
+  NotifitaionApi.init();
+
   String msg=pams["title"];
   int id=pams['id'];
   Duration d=pams['duration'];
@@ -31,6 +35,9 @@ void intervalRepeat(Map<String,dynamic> pams)async{
 
 @pragma('vm:entry-point')
 void intervalNoneRepeat(Map<String,dynamic> pams)async{
+
+  NotifitaionApi.init();
+
   String msg=pams["title"];
 
   await NotifitaionApi.showNification(msg);

@@ -52,7 +52,7 @@ class AlramRunner {
       specificTimer(DateTime(alarm.year!,alarm.month!,alarm.day!,alarm.H!,alarm.M!,alarm.S!),alarm.title!,alarm.id);
     }
     else if(alarm.type=='i'){
-      intervalTimer(Duration(hours:alarm.H!,minutes: alarm.M!,seconds:  alarm.S!, days: 0), alarm.title!, alarm.repeat!, alarm.id);
+      intervalTimer(Duration(hours:alarm.H!,minutes: alarm.M!,seconds:  alarm.S!, days: 0), alarm.title!, false, alarm.id);
     }
     else{
 
