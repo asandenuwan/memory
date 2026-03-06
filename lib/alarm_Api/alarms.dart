@@ -8,14 +8,14 @@ void specificAlarm(Map<String,dynamic> pams)async{
 }
 
 @pragma('vm:entry-point')
-void specificAlarmRepaet(Map<String,dynamic> pams)async{
+void weekAlarm(Map<String,dynamic> pams)async{
 
   DateTime d=pams['date'];
   String msg=pams["title"];
   int id=pams['id'];
 
   await NotifitaionApi.showNification(msg);
-  AlramRunner.specificTimer(d.add(Duration(days: 7)),msg,id);
+  AlramRunner.intervalTimer(Duration(days: 7), msg, true, id);
 }
 
 @pragma('vm:entry-point')
