@@ -14,6 +14,7 @@ class Alarm{
   late String type;
   String? title;
   Id id=Isar.autoIncrement;
+  int? AlarmId;
   int? year;
   int? month;
   int? day;

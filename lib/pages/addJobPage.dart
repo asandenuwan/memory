@@ -223,8 +223,8 @@ class _addJobPageState extends State<addJobPage> {
 
                         if(context.read<AlarmBloc>().state is SettedAlarm){
                           SettedAlarm a=context.read<AlarmBloc>().state as SettedAlarm;
+                          a.alarm.title=title.text;
                           context.read<BackendBloc>().add(addNewJobAndAlarm(job: j, alarm: a.alarm));
-                          context.read<BackendBloc>().add(loadAlarm(alarm: a.alarm));
 
                         }else{context.read<BackendBloc>().add(addNewJob(job: j));}
 

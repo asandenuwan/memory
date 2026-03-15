@@ -7,16 +7,32 @@ import 'backend/backend_bloc.dart';
 import 'pages/Tab.dart';
 import 'NotificationApi/notification.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'dart:io';
 
+import 'database/alarmCount.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (await Permission.notification.isDenied) {
     await Permission.notification.request();
   }
+
+  // if (Platform.isAndroid) {
+  //   var status = await Permission.scheduleExactAlarm.status;
+  //   if (status.isDenied) {
+  //     // Only launch if we don't have it
+  //     final intent = AndroidIntent(
+  //       action: 'android.settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM',
+  //         data: 'package:com.example.memory'
+  //     );
+  //     await intent.launch();
+  //   }
+  // }
+
   await memoryDb.init();
   await NotifitaionApi.init();
-
+  await alarmCounter.init();
 
   await AlramRunner.init(); // initialize once
 

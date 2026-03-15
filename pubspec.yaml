@@ -11,18 +11,25 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   isar_community: ^3.3.0
   isar_community_flutter_libs: ^3.3.0
+
   path_provider: any
+
   cupertino_icons: ^1.0.8
+
   flutter_bloc: ^9.1.1
+
   android_alarm_manager_plus: ^5.0.0
+  android_intent_plus: ^6.0.0
+
   flutter_local_notifications: ^17.0.0
+
   flutter_slidable: ^3.1.0
 
   permission_handler: ^12.0.1
   permission_handler_android: ^13.0.1
-  permission_handler_apple: ^9.4.7
 
 dev_dependencies:
   flutter_test:
@@ -30,9 +37,7 @@ dev_dependencies:
   isar_community_generator: ^3.3.0
   build_runner: ^2.7.1
 
-
 flutter:
-
   uses-material-design: true
 
 

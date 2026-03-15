@@ -36,7 +36,6 @@ class _TabState extends State<TabWidget> {
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               print("check");
-              await NotifitaionApi.showNification("hellow");
               if(states.currentPage!.Ctab.id >=0){
                 // return addJobWidget(context);
                 // Navigator.push(context, MaterialPageRoute(builder: (context){return addJobPage();}));

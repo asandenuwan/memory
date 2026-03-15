@@ -2,31 +2,33 @@ import 'alramRunner.dart';
 import '../NotificationApi/notification.dart';
 
 @pragma('vm:entry-point')
-void specificAlarm(Map<String,dynamic> pams)async{
+void specificAlarm(int id,Map<String,dynamic> pams)async{
+  print("......................specificAlarm");
+  await NotifitaionApi.init();
+  await AlramRunner.init();
 
-  NotifitaionApi.init();
   await NotifitaionApi.showNification(pams["title"]);
 }
 
 @pragma('vm:entry-point')
-void weekAlarm(Map<String,dynamic> pams)async{
-  NotifitaionApi.init();
+void weekAlarm(int id,Map<String,dynamic> pams)async{
+  print("..............weekAlarm");
+  await NotifitaionApi.init();
+  await AlramRunner.init();
 
-  DateTime d=pams['date'];
   String msg=pams["title"];
-  int id=pams['id'];
 
   await NotifitaionApi.showNification(msg);
   AlramRunner.intervalTimer(Duration(days: 7), msg, true, id);
 }
 
 @pragma('vm:entry-point')
-void intervalRepeat(Map<String,dynamic> pams)async{
-
-  NotifitaionApi.init();
+void intervalRepeat(int id ,Map<String,dynamic> pams)async{
+  print(".....................intervalRepeat");
+  await NotifitaionApi.init();
+  await AlramRunner.init();
 
   String msg=pams["title"];
-  int id=pams['id'];
   Duration d=pams['duration'];
 
   await NotifitaionApi.showNification(msg);
@@ -34,9 +36,10 @@ void intervalRepeat(Map<String,dynamic> pams)async{
 }
 
 @pragma('vm:entry-point')
-void intervalNoneRepeat(Map<String,dynamic> pams)async{
-
-  NotifitaionApi.init();
+void intervalNoneRepeat(int id,Map<String,dynamic> pams)async{
+  print("........................intervalNoneRepeat");
+  await AlramRunner.init();
+  await NotifitaionApi.init();
 
   String msg=pams["title"];
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotifitaionApi{
@@ -6,7 +8,7 @@ class NotifitaionApi{
   static late final AndroidNotificationDetails androidNotificationDetails;
   static late final NotificationDetails details;
   static int idCount=0;
-
+  static bool isSetup=false;
   static Future<void> init()async{
     const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -22,8 +24,15 @@ class NotifitaionApi{
         enableVibration: true,
         fullScreenIntent: true
     );
+    try{
+      if(isSetup==false){
+        details=NotificationDetails(android: androidNotificationDetails);
+        isSetup=true;
+      }
+    }catch (e){
+      print("==========================${e}");
+    }
 
-    details=NotificationDetails(android: androidNotificationDetails);
 
   }
 

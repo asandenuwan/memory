@@ -87,8 +87,12 @@ class _specificTimerState extends State<specificTimer> {
             mainAxisSize: .max,
             children: [
               Expanded(child:DropdownButtonFormField<int>(
-                  items: List.generate(25,(i){
-                    return DropdownMenuItem(child: Text(i.toString()),value: i);
+                  items: List.generate(24,(i){
+                    String label=i.toString();
+                    if(i>12){
+                      label=(i-12).toString();
+                    }
+                    return DropdownMenuItem(child: Text(label),value: i);
                   }),
                   onChanged: (i){hour=i!;},
                   decoration: InputDecoration(
@@ -99,7 +103,7 @@ class _specificTimerState extends State<specificTimer> {
                   )
               )),
               Expanded(child:DropdownButtonFormField<int>(
-                  items: List.generate(61,(i){
+                  items: List.generate(60,(i){
                     return DropdownMenuItem(child: Text(i.toString()),value: i);
                   }),
                   onChanged: (i){min=i!;},
@@ -111,7 +115,7 @@ class _specificTimerState extends State<specificTimer> {
                   )
               )),
               Expanded(child:DropdownButtonFormField<int>(
-                  items: List.generate(61,(i){
+                  items: List.generate(60,(i){
                     return DropdownMenuItem(child: Text(i.toString()),value: i);
                   }),
                   onChanged: (i){sec=i!;},
@@ -212,8 +216,12 @@ class _weeklyTimerState extends State<weeklyTimer> {
             children: [
               Expanded(
                   child: DropdownButtonFormField(
-                      items: List.generate(25, (i){
-                       return DropdownMenuItem(value: i,child: Text(i.toString()),);
+                      items: List.generate(24, (i){
+                        String label=i.toString();
+                        if(i>12){
+                          label=(i-12).toString();
+                        }
+                       return DropdownMenuItem(value: i,child: Text(label),);
                       }
                       ), onChanged: (i){setState(() {
                         hour=i??0;
@@ -228,7 +236,7 @@ class _weeklyTimerState extends State<weeklyTimer> {
               ),
               Expanded(
                   child: DropdownButtonFormField(
-                      items: List.generate(61, (i){
+                      items: List.generate(60, (i){
                         return DropdownMenuItem(value: i,child: Text(i.toString()),);
                       }
                       ), onChanged: (i){setState(() {
@@ -245,7 +253,7 @@ class _weeklyTimerState extends State<weeklyTimer> {
               ),
               Expanded(
                   child: DropdownButtonFormField(
-                      items: List.generate(61, (i){
+                      items: List.generate(60, (i){
                         return DropdownMenuItem(value: i,child: Text(i.toString()),);
                       }
                       ), onChanged: (i){setState(() {
@@ -308,7 +316,7 @@ class _intervalTimerState extends State<intervalTimer> {
             spacing: 10,
             children: [
             Expanded(child: DropdownButtonFormField<int>(
-                items:  List.generate(25, (int l){
+                items:  List.generate(24, (int l){
                   return DropdownMenuItem(
                     child: Text(l.toString()),
                     value: l,
@@ -326,7 +334,7 @@ class _intervalTimerState extends State<intervalTimer> {
               )
             ),
             Expanded(child: DropdownButtonFormField<int>(
-                items:  List.generate(61, (int l){
+                items:  List.generate(60, (int l){
                   return DropdownMenuItem(
                     child: Text(l.toString()),
                     value: l,
@@ -343,7 +351,7 @@ class _intervalTimerState extends State<intervalTimer> {
               )
             )
             ),Expanded(child: DropdownButtonFormField<int>(
-                items:  List.generate(61, (int l){
+                items:  List.generate(60, (int l){
                   return DropdownMenuItem(
                     child: Text(l.toString()),
                     value: l,

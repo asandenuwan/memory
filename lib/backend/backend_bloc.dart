@@ -83,7 +83,7 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
           
         }
       }catch (e){
-        print("-------------error-------------------- $e ;;;;;;;;;;;;;;;;;;;");
+        print("-------------addNewJob BACKENDBLOC-------------------- $e ;;;;;;;;;;;;;;;;;;;");
       }
     });
 
@@ -95,14 +95,15 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
           await memoryDb().addJobAndAlarm(tab: box.currentPage!.Ctab, job: E.job,alarm: E.alarm);
           List<Job> j = await memoryDb().getJobs(box.currentPage!.Ctab);
           //--------------------loadPage event-------------------
-          add(loadPage(await box.currentPage!.Ctab));
-          //--------------------------------------------------------
+          // add(loadPage(await box.currentPage!.Ctab));
+          //-----------------------------------------------------
           emit(MailBox(currentPage: CurrentPage(Ctab: box.currentPage!.Ctab, jobs: j), tabList: box.tabList));
 
+          AlramRunner.loadAlarm(E.alarm);
 
         }
       }catch (e){
-        print("-------------error-------------------- $e ;;;;;;;;;;;;;;;;;;;");
+        print("-------------addNewJobAndAlarm BACKENDBLOC-------------------- $e ;;;;;;;;;;;;;;;;;;;");
       }
     });
 
