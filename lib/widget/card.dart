@@ -30,8 +30,7 @@ class _CardState extends State<card> {
       motion: DrawerMotion(),
         children: [
         SlidableAction(onPressed: (context){
-          // return editJobWidget(context, widget.job);// note edit here
-          // Navigator.push(context, MaterialPageRoute(builder: (context){return editJobPage(job: widget.job);}));
+         
           Navigator.pop(context);
           Navigator.push(context, MaterialPageRoute(builder: (context){return editJobPage(job: widget.job);}));
         },
