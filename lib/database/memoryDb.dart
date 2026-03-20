@@ -4,6 +4,8 @@ import 'package:memory_v2/database/alarmRow.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:isar_community/isar.dart';
 
+import '../alarm_Api/alramRunner.dart';
+
 import 'jobrow.dart';
 import 'tabrow.dart';
 
@@ -46,7 +48,7 @@ class memoryDb{
   Future<void> addJobAndAlarm({required Tab tab,required Job job, required Alarm alarm})async{
     if(isar.isOpen){
       return await memoryDb.isar.writeTxn(()async{
-
+        print("alarm id==================${alarm.AlarmId}");
         await isar.jobs.put(job);
 
         await isar.Alarms.put(alarm);
@@ -71,7 +73,8 @@ class memoryDb{
 
   Future<List<Job>> getJobs(Tab tab)async{
     if(isar.isOpen){
-      return await memoryDb.isar.writeTxn(()async{
+
+      return await memoryDb.isar.txn(()async{
         await tab.jobs.load();
         return await tab.jobs.toList();
       });
@@ -80,6 +83,16 @@ class memoryDb{
     }
 
   }
+
+  Future<Alarm?> getAlarm(Job job)async{
+    return await isar.txn(() async {
+      await job.alarm.load();
+      Alarm? alarm= job.alarm.value;
+      print("---------------${alarm?.AlarmId??"no alarm"}");
+      return alarm;
+    });
+  }
+
 
   Future<void>deleteTab(Tab tab)async{
     if(!isar.isOpen){print("call init before us DB");exit(-1);}
@@ -97,6 +110,18 @@ class memoryDb{
   Future<void>deleteJob(Job job,Tab tab)async{
     if(!isar.isOpen){print("call init before us DB");exit(-1);}
     await isar.writeTxn(() async{
+
+      await job.alarm.load();
+      print("test 1");
+      if (await job.alarm.value!=null) {
+        print("test 2");
+        await AlramRunner.cancelAlarm(job.alarm.value!);
+        await isar.Alarms.delete(job.alarm.value!.id);
+        print("test 3");
+      }else{
+        print("no alarm");
+      }
+      print("test 4");
       await isar.jobs.delete(job.id);
       tab.jobs.remove(job);
       await tab.jobs.save();
@@ -104,9 +129,33 @@ class memoryDb{
     });
   }
 
+  Future<void>deleteAlarm(Alarm alarm)async{
+    await isar.writeTxn(() async {
+      isar.Alarms.delete(alarm.id);
+    });
+  }
+
   Future<bool> updateJob(Job job) async {
+    print("updateJob");
     return await isar.writeTxn(() async {
       await isar.jobs.put(job);
+      return true;
+    });
+  }
+
+  Future<bool> updateJobWithAlarm(Job job,Alarm alarm) async {
+    print("updateJobWithAlarm func");
+    return await isar.writeTxn(() async {
+      await job.alarm.load();
+      print("object");
+      await isar.Alarms.put(alarm);
+      print("object");
+      job.alarm.value=alarm;
+      await job.alarm.save();
+      print("object");
+      await isar.jobs.put(job);
+      print("object");
+      await job.alarm.save();
       return true;
     });
   }

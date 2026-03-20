@@ -14,21 +14,10 @@ import 'database/alarmCount.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   if (await Permission.notification.isDenied) {
     await Permission.notification.request();
   }
-
-  // if (Platform.isAndroid) {
-  //   var status = await Permission.scheduleExactAlarm.status;
-  //   if (status.isDenied) {
-  //     // Only launch if we don't have it
-  //     final intent = AndroidIntent(
-  //       action: 'android.settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM',
-  //         data: 'package:com.example.memory'
-  //     );
-  //     await intent.launch();
-  //   }
-  // }
 
   await memoryDb.init();
   await NotifitaionApi.init();

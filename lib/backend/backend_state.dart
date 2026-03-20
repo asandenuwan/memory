@@ -21,5 +21,4 @@ final class MailBox extends BackendState{
   MailBox({required this.currentPage, required this.tabList});
 }
 
-
 final class INIT extends BackendState{}

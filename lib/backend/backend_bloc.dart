@@ -1,13 +1,17 @@
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import '../alarm_Api/alramRunner.dart';
 import '../database/memoryDb.dart';
 import '../database/tabrow.dart';
 import '../database/jobrow.dart';
 import '../database/alarmRow.dart';
-
+import '../database/alarmCount.dart';
 part 'backend_event.dart';
 part 'backend_state.dart';
+
 
 class BackendBloc extends Bloc<BackendEvent, BackendState> {
   BackendBloc():super(INIT()) {
@@ -83,16 +87,33 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
           
         }
       }catch (e){
-        print("-------------addNewJob BACKENDBLOC-------------------- $e ;;;;;;;;;;;;;;;;;;;");
+        debugPrint("-------------addNewJob BACKENDBLOC-------------------- $e ;;;;;;;;;;;;;;;;;;;");
       }
     });
 
     on<addNewJobAndAlarm>((E,emit)async {//add new job i gona get current tab from CurrentPage state using state var
       try{
+        debugPrint("-------------addNewJobAndAlarm -------------------;;;;;;;;;;;;;;;;;;;");
         if (state is MailBox) {
           final box = state as MailBox;
 
+          int id= await alarmCounter.getAlarmCount();
+          E.alarm.AlarmId=id+1;
+
+          if(E.alarm.type=='w'){
+            int c=0;
+            for(int i=0;i<7;i++){
+              if(E.alarm.weekDays![i]) {
+                c++;
+              }
+            }
+            alarmCounter.addAlarmCount(c);
+          }else{
+            alarmCounter.addAlarmCount(1);
+          }
+
           await memoryDb().addJobAndAlarm(tab: box.currentPage!.Ctab, job: E.job,alarm: E.alarm);
+
           List<Job> j = await memoryDb().getJobs(box.currentPage!.Ctab);
           //--------------------loadPage event-------------------
           // add(loadPage(await box.currentPage!.Ctab));
@@ -103,7 +124,7 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
 
         }
       }catch (e){
-        print("-------------addNewJobAndAlarm BACKENDBLOC-------------------- $e ;;;;;;;;;;;;;;;;;;;");
+        debugPrint("-------------addNewJobAndAlarm BACKENDBLOC-------------------- $e ;;;;;;;;;;;;;;;;;;;");
       }
     });
 
@@ -137,7 +158,40 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
     });
 
     on<updateJob>((event,emit)async{
-      await memoryDb().updateJob(event.job);
+      debugPrint("run update job======================");
+
+        if(event.isAlarmDeleted){
+          debugPrint("delete alarm======================");
+          await event.job.alarm.load();
+          Alarm? alarm=await memoryDb().getAlarm(event.job);
+          AlramRunner.cancelAlarm(alarm!);
+          memoryDb().deleteAlarm(event.job.alarm.value!);
+          memoryDb.isar.writeTxn(()async{await event.job.alarm.reset();});
+        }
+
+        if(event.alarm != null) {
+          await alarmCounter.addAlarmCount(1);
+          event.alarm!.AlarmId=await alarmCounter.getAlarmCount();
+          await memoryDb().updateJobWithAlarm(event.job, event.alarm!);
+
+          // fixme =======================================
+          debugPrint("run ${event.alarm!.AlarmId}");
+          if(event.alarm!.AlarmId != null)AlramRunner.loadAlarm(event.alarm!);
+          else{
+            while(event.alarm!.AlarmId == null){
+              try{
+                print("tryint to get Alarm ID....");
+                AlramRunner.loadAlarm(event.alarm!);
+                break;
+              }
+              catch(e) {Future.delayed(Duration(seconds: 1));}
+            }
+          }
+          // fixme =======================================
+        }else{
+          await memoryDb().updateJob(event.job);
+        }
+
       MailBox cur=state as MailBox;
       add(loadPage(cur.currentPage!.Ctab));
     });

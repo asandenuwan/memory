@@ -2,9 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../backend/backend_bloc.dart';
 import '../database/jobrow.dart';
+import '../database/tabrow.dart';
 import '../widget/alarmTypeWidgets.dart';
 import '../AlarmBloc/alarm_bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Tab;
+
+import 'Tab.dart';
 
 class addJobPage extends StatefulWidget {
   addJobPage({super.key});
@@ -230,6 +233,7 @@ class _addJobPageState extends State<addJobPage> {
 
                         context.read<AlarmBloc>().add(unSetAlarm());
                         Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context){return TabWidget();}));
                       },
                       child: Text(" Add "),
                       style: ButtonStyle(
@@ -243,9 +247,10 @@ class _addJobPageState extends State<addJobPage> {
                     ElevatedButton(
                       onPressed: () {
                         context.read<AlarmBloc>().add(unSetAlarm());
-                        Navigator.of(context).pop();
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context){return TabWidget();}));
                       },
-                      child: Text("Clear"),
+                      child: Text("Back"),
                       style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Colors.red),
                         foregroundColor: WidgetStatePropertyAll(Colors.white),

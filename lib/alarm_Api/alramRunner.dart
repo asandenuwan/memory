@@ -1,13 +1,30 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import '../database/alarmRow.dart';
 import 'alarms.dart';
-import '../database/alarmCount.dart';
 
 class AlramRunner {
 
   AlramRunner();
 
   static Future<void> init() async {
+    if (Platform.isAndroid) {
+      final exactAlarm = await Permission.scheduleExactAlarm.status;
+      if (!exactAlarm.isGranted) {
+        // Opens "Alarms & Reminders" settings page directly
+        final intent = AndroidIntent(
+          action: 'android.settings.REQUEST_SCHEDULE_EXACT_ALARM',
+          flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
+        );
+        await intent.launch();
+      }
+    }
     try{
       await AndroidAlarmManager.initialize();
     }
@@ -15,41 +32,39 @@ class AlramRunner {
   }
 
   static Future<void> specificTimer(DateTime d, String msg, int id) async {
-    print("-----------------------------------setAlrmSpecific;;;;;;;;;;;;;;;;;;");
+    debugPrint("-----------------------------------setAlrmSpecific;;;;;;;;;;;;;;;;;;");
+    debugPrint("--------------------------Specifc alarm:$d");
     await AndroidAlarmManager.oneShotAt(
         d, id, specificAlarm, params: {"title": msg},
-        exact: false,
+        exact: true,
         wakeup: true);
-    await alarmCounter.addAlarmCount(1);
   }
 
   static Future<void> intervalTimer(Duration d, String msg, bool repeat,int alarm_id) async {
-    print("-----------------------------------setAlrmInterval;;;;;;;;;;;;;;;;;;");
-    print("...................................{$alarm_id}");
+    debugPrint("-----------------------------------setAlrmInterval;;;;;;;;;;;;;;;;;;");
+    debugPrint("...................................{$alarm_id}");
     DateTime time = DateTime.now().add(d);
     if (repeat) {
       await AndroidAlarmManager.oneShotAt(time, alarm_id, intervalRepeat,
-          params: {'title': msg, "duration": d},
-          exact: false,
+          params: {'title': msg},
+          exact: true,
           wakeup: true);
     } else {
-      print(
+      debugPrint(
           "-----------------------------------setAlrm no repeat Interval;;;;;;;;;;;;;;;;;;");
 
       await AndroidAlarmManager.oneShotAt(time,
           alarm_id,
           intervalNoneRepeat,
           params: {'title': msg},
-          exact: false,
+          exact: true,
           wakeup: true);
     }
-    await alarmCounter.addAlarmCount(1);
   }
 
   static Future<void> weeklyTimer(List<DateTime> dateList,int alarm_id,String msg) async {
 
-    print(" q               3333                          weekAlarm timer");
-    await alarmCounter.addAlarmCount(alarm_id+dateList.length);
+    debugPrint(" q               3333                          weekAlarm timer");
 
     for (int i = 0; i < dateList.length; i++) {
       await AndroidAlarmManager.oneShotAt(
@@ -59,28 +74,29 @@ class AlramRunner {
           params: {
             'title': msg
           },
-          wakeup: true
+          wakeup: true,
+          exact:true
       );
       alarm_id++;
     }
   }
 
   static Future<void> loadAlarm(Alarm alarm) async {
-    int id=await alarmCounter.getAlarmCount();
-    alarm.AlarmId=id+1;
-
+    debugPrint("---------------------------------------------------load alarm--------");
     if (alarm.type == 's') {
+      print("---------------------------------------------------specificTimer alarm--------");
       specificTimer(DateTime(
           alarm.year!, alarm.month!, alarm.day!, alarm.H!, alarm.M!, alarm.S!),
           alarm.title!, alarm.AlarmId!);
     }
     else if (alarm.type == 'i') {
+      debugPrint("---------------------------------------------------intervalTimer alarm--------");
       intervalTimer(Duration(
           hours: alarm.H!, minutes: alarm.M!, seconds: alarm.S!, days: 0),
           alarm.title!, false, alarm.AlarmId!);
     }
     else {
-      print("---------------------------------------------------weekly alarm--------");
+      debugPrint("---------------------------------------------------weekly alarm--------");
       List<DateTime> TimeList = [];
       List<int> tmpList = [];
 
@@ -118,12 +134,32 @@ class AlramRunner {
 
         TimeList.add(date);
       }
-      print("_______________________________________\n$TimeList ====TimeListLenght:${TimeList.length}");
+      debugPrint("_______________________________________\n$TimeList ====TimeListLenght:${TimeList.length}");
       weeklyTimer(TimeList,alarm.AlarmId!, alarm.title!);
     }
   }
 
-  static Future<void> cancelAlarm(int id) async {
-    await AndroidAlarmManager.cancel(id);
+  static Future<void> cancelAlarm(Alarm alarm) async {
+    debugPrint("===========Alarm id delete=========${alarm.AlarmId}");
+
+    if (alarm.AlarmId == null) {
+      debugPrint("===========Alarm id is null, skipping cancel=========");
+      return;
+    }
+
+    if(alarm.type=='w'){
+      int c=0;
+      for(int i=0;i<alarm.weekDays!.length;i++){
+        if(alarm.weekDays![i]==true){
+          print("alarm id==================${alarm.AlarmId}");
+          await AndroidAlarmManager.cancel(alarm.AlarmId!+c);
+          c++;
+        }
+      }
+    }
+    else{
+      debugPrint("alarm id==================${alarm.AlarmId}");
+      await AndroidAlarmManager.cancel(alarm.AlarmId!);
+    }
   }
 }

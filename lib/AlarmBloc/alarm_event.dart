@@ -8,5 +8,14 @@ final class setAlarm extends AlarmEvent {
   setAlarm({required this.alarm});
 }
 
+final class getAlarm extends AlarmEvent{
+  final Job job;
+  getAlarm({required this.job});
+}
+
+final class editJobGetAlarm extends AlarmEvent{
+  final Job job;
+  editJobGetAlarm({required this.job});
+}
 
 final class unSetAlarm extends AlarmEvent {}

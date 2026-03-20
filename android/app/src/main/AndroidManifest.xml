@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
@@ -38,16 +39,16 @@
         <service
             android:name="dev.fluttercommunity.plus.androidalarmmanager.AlarmService"
             android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false"/>
+            android:exported="true"/>
 
         <receiver
             android:name="dev.fluttercommunity.plus.androidalarmmanager.AlarmBroadcastReceiver"
-            android:exported="false"/>
+            android:exported="true"/>
 
         <receiver
             android:name="dev.fluttercommunity.plus.androidalarmmanager.RebootBroadcastReceiver"
             android:enabled="true"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
