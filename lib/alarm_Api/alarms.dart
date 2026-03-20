@@ -29,7 +29,7 @@ void intervalRepeat(int id ,Map<String,dynamic> pams)async{
   await AlramRunner.init();
 
   String msg=pams["title"];
-  Duration d=pams['duration'];
+  Duration d=Duration(days: 7);
 
   await NotifitaionApi.showNification(msg);
   AlramRunner.intervalTimer(d, msg, true, id);

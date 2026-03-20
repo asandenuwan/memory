@@ -30,8 +30,10 @@ class loadAlarm extends BackendEvent{
 }
 
 class updateJob extends BackendEvent{
+  final bool isAlarmDeleted;
+  Alarm? alarm;
   final Job job;
-  updateJob(this.job);
+  updateJob({required this.job, required this.isAlarmDeleted});
 }
 
 class loadTabs extends BackendEvent{}

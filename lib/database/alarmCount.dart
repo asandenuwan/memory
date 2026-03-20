@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 
 class alarmCounter{
@@ -24,6 +25,7 @@ class alarmCounter{
     final j=jsonDecode(tmp);
     count+=j["count"] as int;
     file.writeAsString(jsonEncode({"count": count}));
+    debugPrint("alarm count: ${count}");
   }
 
   static Future<int>getAlarmCount()async{

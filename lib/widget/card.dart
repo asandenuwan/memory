@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart' hide Tab;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:memory_v2/pages/editJobPage.dart';
 import 'package:memory_v2/widget/showTab.dart';
 import '../database/jobrow.dart';
 import '../backend/backend_bloc.dart';
 import '../database/tabrow.dart';
-import '../pages/editJob.dart';
+import '../pages/editJobPage.dart';
 class card extends StatefulWidget {
    card({super.key, required this.job, required this.tab});
 
@@ -29,7 +30,10 @@ class _CardState extends State<card> {
       motion: DrawerMotion(),
         children: [
         SlidableAction(onPressed: (context){
-          return editJobWidget(context, widget.job);
+          // return editJobWidget(context, widget.job);// note edit here
+          // Navigator.push(context, MaterialPageRoute(builder: (context){return editJobPage(job: widget.job);}));
+          Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(builder: (context){return editJobPage(job: widget.job);}));
         },
           backgroundColor: Colors.blueGrey,
             foregroundColor: Colors.white,
@@ -59,7 +63,6 @@ class _CardState extends State<card> {
                       Checkbox(value: widget.job.isDid,
                         onChanged: (i){
                           widget.job.isDid=i!;
-                          context.read<BackendBloc>().add(updateJob(widget.job));
                         },
                         checkColor: Colors.green,
                         fillColor: WidgetStateProperty.resolveWith<Color>((states) {
