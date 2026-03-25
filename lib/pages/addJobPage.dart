@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:memory_v2/styles/decaration.dart';
 
 import '../backend/backend_bloc.dart';
 import '../database/jobrow.dart';
-import '../database/tabrow.dart';
 import '../widget/alarmTypeWidgets.dart';
 import '../AlarmBloc/alarm_bloc.dart';
 import 'package:flutter/material.dart' hide Tab;
@@ -26,20 +26,17 @@ class _addJobPageState extends State<addJobPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Title(
-          color: Colors.black,
-          child: Text(
-            "Add Job",
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: .bold,
-              color: Colors.white,
-            ),
-          ),
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: decaration.TitleAppBar(),
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         centerTitle: true,
+        title:Text(
+        "Add Job",
+        style: fontStyle.Header(),
+      ),
       ),
       body: Container(
         margin: .symmetric(vertical: 20),
@@ -55,17 +52,12 @@ class _addJobPageState extends State<addJobPage> {
                   padding: .symmetric(vertical: 10, horizontal: 20),
                   child: Column(
                     spacing: 10,
+
                     children: [
                       Text("Title", style: TextStyle(fontSize: 20)),
 
                       TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          fillColor: Colors.orangeAccent,
-                          filled: true,
-                        ),
+                        decoration: decaration.TitleInput(),
                         textAlign: .center,
                         controller: title,
                       ),
@@ -75,22 +67,12 @@ class _addJobPageState extends State<addJobPage> {
                       TextField(
                         keyboardType: TextInputType.multiline,
                         maxLines: 10,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          fillColor: Colors.white70,
-                          filled: true,
-                        ),
+                        decoration: decaration.DescriptionInput(),
                         controller: Disc,
                       ),
                     ],
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1),
-                    color: Colors.yellowAccent.shade100,
-                  ),
+                  decoration: decaration.InputContainers(),
                 ),
 
                 // note: vvvv alarm cantainer ;
@@ -126,22 +108,7 @@ class _addJobPageState extends State<addJobPage> {
                                           });
                                         },
                                         child: Text("specific"),
-                                        style: ButtonStyle(
-                                          backgroundColor: (pageOfAlarm == 0)
-                                              ? WidgetStatePropertyAll(
-                                                  Colors.green,
-                                                )
-                                              : WidgetStatePropertyAll(
-                                                  Colors.blueGrey,
-                                                ),
-                                          foregroundColor:
-                                              WidgetStatePropertyAll(
-                                                Colors.white,
-                                              ),
-                                          textStyle: WidgetStatePropertyAll(
-                                            TextStyle(fontSize: 15),
-                                          ),
-                                        ),
+                                        style: decaration.AlarmSelectingBtn(pageOfAlarm,0),
                                       ),
                                       ElevatedButton(
                                         onPressed: () {
@@ -150,22 +117,7 @@ class _addJobPageState extends State<addJobPage> {
                                           });
                                         },
                                         child: Text("weekly"),
-                                        style: ButtonStyle(
-                                          backgroundColor: (pageOfAlarm == 1)
-                                              ? WidgetStatePropertyAll(
-                                                  Colors.green,
-                                                )
-                                              : WidgetStatePropertyAll(
-                                                  Colors.blueGrey,
-                                                ),
-                                          foregroundColor:
-                                              WidgetStatePropertyAll(
-                                                Colors.white,
-                                              ),
-                                          textStyle: WidgetStatePropertyAll(
-                                            TextStyle(fontSize: 15),
-                                          ),
-                                        ),
+                                        style: decaration.AlarmSelectingBtn(pageOfAlarm,1),
                                       ),
                                       ElevatedButton(
                                         onPressed: () {
@@ -174,22 +126,7 @@ class _addJobPageState extends State<addJobPage> {
                                           });
                                         },
                                         child: Text("interval"),
-                                        style: ButtonStyle(
-                                          backgroundColor: (pageOfAlarm == 2)
-                                              ? WidgetStatePropertyAll(
-                                                  Colors.green,
-                                                )
-                                              : WidgetStatePropertyAll(
-                                                  Colors.blueGrey,
-                                                ),
-                                          foregroundColor:
-                                              WidgetStatePropertyAll(
-                                                Colors.white,
-                                              ),
-                                          textStyle: WidgetStatePropertyAll(
-                                            TextStyle(fontSize: 15),
-                                          ),
-                                        ),
+                                        style: decaration.AlarmSelectingBtn(pageOfAlarm,2),
                                       ),
                                     ],
                                   ),
@@ -206,11 +143,7 @@ class _addJobPageState extends State<addJobPage> {
                           : SizedBox.shrink(),
                     ],
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1),
-                    color: Colors.yellowAccent.shade100,
-                  ),
+                  decoration: decaration.InputContainers(),
                 ),
 
                 // note: vvvvv done or clear button ;
@@ -218,7 +151,24 @@ class _addJobPageState extends State<addJobPage> {
                   mainAxisSize: .max,
                   mainAxisAlignment: .spaceBetween,
                   children: [
-                    ElevatedButton(
+                    Expanded(
+                      child:  ElevatedButton(
+                      onPressed: () {
+                        context.read<AlarmBloc>().add(unSetAlarm());
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context){return TabWidget();}));
+                      },
+                      child: Text("Back"),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(Colors.red),
+                        foregroundColor: WidgetStatePropertyAll(Colors.white),
+                        textStyle: WidgetStatePropertyAll(
+                          TextStyle(fontSize: 25),
+                        ),
+                      ),
+                    ),flex: 2,),
+
+                    Expanded(child: ElevatedButton(
                       onPressed: () {
                         Job j = Job();
                         j.title = title.text;
@@ -243,31 +193,18 @@ class _addJobPageState extends State<addJobPage> {
                           TextStyle(fontSize: 25),
                         ),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AlarmBloc>().add(unSetAlarm());
-                        Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context){return TabWidget();}));
-                      },
-                      child: Text("Back"),
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Colors.red),
-                        foregroundColor: WidgetStatePropertyAll(Colors.white),
-                        textStyle: WidgetStatePropertyAll(
-                          TextStyle(fontSize: 25),
-                        ),
-                      ),
-                    ),
+                    ),flex: 3,),
+
                   ],
                 ),
               ],
             ),
           ),
         ),
-        color: Colors.white,
+        color: Colors.transparent,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade200
+      ,
     );
   }
 }

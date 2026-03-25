@@ -11,6 +11,7 @@ final class TabList extends BackendState{
 final class CurrentPage extends BackendState{
    final List<Job>? jobs;
    final Tab Ctab;
+   int doneJob=0;
   CurrentPage({required this.Ctab,required this.jobs});
 }
 

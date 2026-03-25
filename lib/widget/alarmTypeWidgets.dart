@@ -151,7 +151,6 @@ class _specificTimerState extends State<specificTimer> {
         ],
       ), 
         decoration: BoxDecoration(
-          border: Border.all(width: 1),
           borderRadius: BorderRadius.circular(10)
         )
     );

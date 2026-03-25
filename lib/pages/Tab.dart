@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart' hide Tab;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../styles/decaration.dart';
 import '../widget/jobList.dart';
 import '../widget/menu.dart';
 import '../backend/backend_bloc.dart';
 import 'addJobPage.dart';
-import '../NotificationApi/notification.dart';
 
 class TabWidget extends StatefulWidget {
   TabWidget({super.key});
@@ -23,27 +23,37 @@ class _TabState extends State<TabWidget> {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-              title: Text(states.currentPage!.Ctab.tabName, style: TextStyle(
-                color: Colors.white,
-              ),),
-              backgroundColor: Colors.black,
+            backgroundColor: Colors.transparent, // required!
+            elevation: 0,
+            flexibleSpace: Container(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              decoration: decaration.TitleAppBar(),
+            ),
+
             iconTheme: IconThemeData(
               color: Colors.white,
             ),
+            
+            title: Text(
+              states.currentPage!.Ctab.tabName,
+              style: fontStyle.TabHeader(),
+            )
           ),
           drawer: menuList(context),
 
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              debugPrint("check");
-              if(states.currentPage!.Ctab.id >=0){
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context){return addJobPage();}));
-              }
-            },
-            child: Icon(Icons.add,color: Colors.white,),
-            backgroundColor: Colors.black,
-
+          floatingActionButton:Container(
+            child:  FloatingActionButton(
+              onPressed: () async {
+                if(states.currentPage!.Ctab.id >=0){
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context){return addJobPage();}));
+                }
+              },
+              child: Icon(Icons.add,color: Colors.white,),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
+            decoration: decaration.addJobButton(),
           ),
 
           body: Container(
@@ -51,7 +61,9 @@ class _TabState extends State<TabWidget> {
             margin: EdgeInsets.all(20),
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),color: Colors.lime.shade200),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.grey.shade100
+            ),
           )
         );
       }
