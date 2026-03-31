@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:memory_v2/styles/decaration.dart';
 import '../backend/backend_bloc.dart';
 import '../AlarmBloc/alarm_bloc.dart';
 import '../database/jobrow.dart';
@@ -66,13 +67,7 @@ class _editJobPageState extends State<editJobPage> {
                       Text("Title", style: TextStyle(fontSize: 20)),
 
                       TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          fillColor: Colors.orangeAccent,
-                          filled: true,
-                        ),
+                        decoration: decaration.TitleInput(),
                         textAlign: .center,
                         controller: title,
                       ),
@@ -82,22 +77,12 @@ class _editJobPageState extends State<editJobPage> {
                       TextField(
                         keyboardType: TextInputType.multiline,
                         maxLines: 10,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          fillColor: Colors.white70,
-                          filled: true,
-                        ),
+                        decoration: decaration.DescriptionInput(),
                         controller: Disc,
                       ),
                     ],
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1),
-                    color: Colors.yellowAccent.shade100,
-                  ),
+                  decoration: decaration.InputContainers(),
                 ),
 
                 BlocBuilder<AlarmBloc,AlarmState>(builder: (context,state){
@@ -123,11 +108,7 @@ class _editJobPageState extends State<editJobPage> {
                         mainAxisSize: .max,
                         mainAxisAlignment: .spaceBetween,
                       ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(width: 1),
-                        color: Colors.yellowAccent.shade100,
-                      ),
+                      decoration: decaration.InputContainers(),//fixme exiting alarm card
                     );
                   }else{
                     return alarm(widget.job);
@@ -139,7 +120,28 @@ class _editJobPageState extends State<editJobPage> {
                   mainAxisAlignment: .spaceBetween,
                   children: [
 
-                    ElevatedButton(
+                    Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.read<AlarmBloc>().add(unSetAlarm());
+                            Navigator.pop(context);
+                            Navigator.push(context, MaterialPageRoute(builder: (context){return TabWidget();}));
+                          },
+                          child: Text("Back"),
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Colors.red),
+                            foregroundColor: WidgetStatePropertyAll(Colors.white),
+                            textStyle: WidgetStatePropertyAll(
+                              TextStyle(fontSize: 25),
+                            ),
+                          ),
+                        )
+                    ),
+
+                    Expanded(
+                      flex: 3,
+                        child: ElevatedButton(
                       onPressed: () {
                         widget.job.title=title.text;
                         widget.job.discription=Disc.text;
@@ -164,24 +166,8 @@ class _editJobPageState extends State<editJobPage> {
                           TextStyle(fontSize: 25),
                         ),
                       ),
-                    ),
+                    ))
 
-
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AlarmBloc>().add(unSetAlarm());
-                        Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context){return TabWidget();}));
-                      },
-                      child: Text("Back"),
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Colors.red),
-                        foregroundColor: WidgetStatePropertyAll(Colors.white),
-                        textStyle: WidgetStatePropertyAll(
-                          TextStyle(fontSize: 25),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -217,64 +203,19 @@ class _editJobPageState extends State<editJobPage> {
                         AlarmTypeFlag=0;
                       });},
                       child: Text("Specific"),
-                      style: ButtonStyle(
-                        backgroundColor: (AlarmTypeFlag == 0)
-                            ? WidgetStatePropertyAll(
-                          Colors.green,
-                        )
-                            : WidgetStatePropertyAll(
-                          Colors.blueGrey,
-                        ),
-                        foregroundColor:
-                        WidgetStatePropertyAll(
-                          Colors.white,
-                        ),
-                        textStyle: WidgetStatePropertyAll(
-                          TextStyle(fontSize: 15),
-                        ),
-                      ),
+                      style: decaration.AlarmSelectingBtn(AlarmTypeFlag,0),
                     ),
                     ElevatedButton(onPressed: (){setState(() {
                           AlarmTypeFlag=1;
                         });},
                         child: Text("weekly"),
-                        style: ButtonStyle(
-                          backgroundColor: (AlarmTypeFlag == 1)
-                              ? WidgetStatePropertyAll(
-                            Colors.green,
-                          )
-                              : WidgetStatePropertyAll(
-                            Colors.blueGrey,
-                          ),
-                          foregroundColor:
-                          WidgetStatePropertyAll(
-                            Colors.white,
-                          ),
-                          textStyle: WidgetStatePropertyAll(
-                            TextStyle(fontSize: 15),
-                          ),
-                        )),
+                        style: decaration.AlarmSelectingBtn(AlarmTypeFlag,1)),
                     ElevatedButton(
                         onPressed: (){setState(() {
                           AlarmTypeFlag=2;
                         });},
                         child: Text("interval"),
-                        style: ButtonStyle(
-                          backgroundColor: (AlarmTypeFlag == 2)
-                              ? WidgetStatePropertyAll(
-                            Colors.green,
-                          )
-                              : WidgetStatePropertyAll(
-                            Colors.blueGrey,
-                          ),
-                          foregroundColor:
-                          WidgetStatePropertyAll(
-                            Colors.white,
-                          ),
-                          textStyle: WidgetStatePropertyAll(
-                            TextStyle(fontSize: 15),
-                          ),
-                        )
+                        style: decaration.AlarmSelectingBtn(AlarmTypeFlag,2)
                     )
                   ],
                     mainAxisAlignment: .spaceAround,),
@@ -287,11 +228,7 @@ class _editJobPageState extends State<editJobPage> {
 
           ],
         ),
-      decoration: BoxDecoration(
-        color: Colors.yellow.shade300,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(width: 1)
-      ),
+      decoration: decaration.InputContainers(),
       padding: EdgeInsets.symmetric(horizontal: 20),
     );
   }

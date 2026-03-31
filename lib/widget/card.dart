@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart' hide Tab;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:memory_v2/database/memoryDb.dart';
 import 'package:memory_v2/pages/editJobPage.dart';
 import 'package:memory_v2/widget/showTab.dart';
 import '../database/jobrow.dart';
 import '../backend/backend_bloc.dart';
 import '../database/tabrow.dart';
-import '../pages/editJobPage.dart';
+import '../styles/decaration.dart';
 class card extends StatefulWidget {
    card({super.key, required this.job, required this.tab});
 
@@ -30,7 +31,6 @@ class _CardState extends State<card> {
       motion: DrawerMotion(),
         children: [
         SlidableAction(onPressed: (context){
-         
           Navigator.pop(context);
           Navigator.push(context, MaterialPageRoute(builder: (context){return editJobPage(job: widget.job);}));
         },
@@ -54,37 +54,52 @@ class _CardState extends State<card> {
 
     child: GestureDetector(
           child: ListTile(title: Container(
-              padding: EdgeInsetsGeometry.all(10),
               child: Center(
                   child: Row(
-                    mainAxisAlignment: .spaceBetween,
+                    mainAxisSize: .max,
                     children: [
-                      Checkbox(value: widget.job.isDid,
-                        onChanged: (i){
-                          widget.job.isDid=i!;
-                        },
-                        checkColor: Colors.green,
-                        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return Colors.black;
-                          }
-                          return Colors.white;
-                        }),
-                      ),
-                      Text(
-                        widget.job.title,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20
+                      Container(
+                        width: 10,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            borderRadius: .circular(10),
+                            color: Colors.blue.shade400
                         ),
-                      )],)
+                      ),
+                      Expanded(child: Row(
+                        mainAxisAlignment: .spaceBetween,
+                        children: [
+                          Checkbox(value: widget.job.isDid,
+                            onChanged: (i){
+                              widget.job.isDid=i!;
+                              context.read<BackendBloc>().add(updateJob(job: widget.job, isAlarmDeleted: false));
+                            },
+                            side: .none,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(4)),
+                            checkColor: Colors.white,
+                            fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+                              if (states.contains(WidgetState.selected)) {
+                                return Colors.green;
+                              }
+                              return Colors.red;
+                            },
+                            ),
+                          ),
+                          Text(
+                            widget.job.title,
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 20,
+                                fontWeight: .w500
+                            ),
+                          )],)),
+                      SizedBox(width: 10,)
+                    ],
+                  )
               ),
-              decoration: BoxDecoration(
-                  color: Colors.green.shade600,
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.blueGrey.shade500,width: 2)
-              )),),
-
+              decoration: decaration.CardDecaration()
+            )
+          ),
           onTap: (){
             return showTab(this.widget.job, context);
           },

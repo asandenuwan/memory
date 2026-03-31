@@ -56,11 +56,18 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
     on<loadPage>((event,emit)async{// when switch to other page
       final jobs = await memoryDb().getJobs(event.tab);
       final tabs = await memoryDb().getTabs();
-      emit(
-        MailBox(
-          currentPage: CurrentPage(Ctab: event.tab, jobs: jobs),
-          tabList: TabList(tabs),
-        ),);
+
+      int c=0;
+      for(Job j in jobs){
+        if(j.isDid)c++;
+      }
+      var m=MailBox(
+        currentPage: CurrentPage(Ctab: event.tab, jobs: jobs),
+        tabList: TabList(tabs),
+      );
+
+      m.currentPage?.doneJob=c;
+      emit(m);
     });
 
     on<addNewTab>((event, emit) async {// add new tab
