@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:memory_v2/AlarmBloc/alarm_bloc.dart';
 import 'package:memory_v2/database/alarmRow.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:isar_community/isar.dart';
@@ -147,14 +148,10 @@ class memoryDb{
     print("updateJobWithAlarm func");
     return await isar.writeTxn(() async {
       await job.alarm.load();
-      print("object");
       await isar.Alarms.put(alarm);
-      print("object");
       job.alarm.value=alarm;
       await job.alarm.save();
-      print("object");
       await isar.jobs.put(job);
-      print("object");
       await job.alarm.save();
       return true;
     });

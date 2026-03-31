@@ -87,11 +87,7 @@ class _CardState extends State<card> {
                           ),
                           Text(
                             widget.job.title,
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 20,
-                                fontWeight: .w500
-                            ),
+                            style: fontStyle.TitleCard(widget.job.isDid),
                           )],)),
                       SizedBox(width: 10,)
                     ],

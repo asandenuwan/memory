@@ -115,13 +115,14 @@ class _editJobPageState extends State<editJobPage> {
                   }
                 }),
                 // note: vvvvv done or clear button ;
+
                 Row(
                   mainAxisSize: .max,
                   mainAxisAlignment: .spaceBetween,
                   children: [
 
                     Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: ElevatedButton(
                           onPressed: () {
                             context.read<AlarmBloc>().add(unSetAlarm());

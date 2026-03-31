@@ -72,7 +72,6 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
 
     on<addNewTab>((event, emit) async {// add new tab
       await memoryDb().addTab(T:event.tab);
-
       emit(MailBox(currentPage: CurrentPage(Ctab: event.tab, jobs: []), tabList: TabList(await memoryDb().getTabs())));
 
     });
@@ -87,9 +86,8 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
           List<Job> j = await memoryDb().getJobs(box.currentPage!.Ctab);
 
           //--------------------loadPage event-------------------
-          add(loadPage(await box.currentPage!.Ctab));
-
           emit(MailBox(currentPage: CurrentPage(Ctab: box.currentPage!.Ctab, jobs: j), tabList: box.tabList));
+          add(loadPage(await box.currentPage!.Ctab));
           //--------------------------------------------------------
           
         }
@@ -126,7 +124,7 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
           // add(loadPage(await box.currentPage!.Ctab));
           //-----------------------------------------------------
           emit(MailBox(currentPage: CurrentPage(Ctab: box.currentPage!.Ctab, jobs: j), tabList: box.tabList));
-
+          add(loadPage(await box.currentPage!.Ctab));
           AlramRunner.loadAlarm(E.alarm);
 
         }
@@ -162,6 +160,7 @@ class BackendBloc extends Bloc<BackendEvent, BackendState> {
           currentPage: CurrentPage(Ctab: event.tab, jobs: jobs),
           tabList: TabList(tabs),
         ),);
+      add(loadPage(event.tab));
     });
 
     on<updateJob>((event,emit)async{

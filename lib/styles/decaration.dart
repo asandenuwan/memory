@@ -105,6 +105,7 @@ class decaration {
 }
 
 class fontStyle{
+
   static TextStyle NormalFontStyle(bool isBlack){
     Color c;
     FontWeight w;
@@ -120,6 +121,24 @@ class fontStyle{
         fontWeight: w,
         color: c
     );
+  }
+
+  static TextStyle TitleCard(bool done){
+    if(done){
+      return TextStyle(
+          color: Colors.grey,
+          fontSize: 20,
+          fontWeight: .w500,
+          decoration: TextDecoration.lineThrough
+      );
+    }
+    else{
+      return TextStyle(
+          color: Colors.black87,
+          fontSize: 20,
+          fontWeight: .w500
+      );
+    }
   }
 
   static TextStyle TabHeader(){
